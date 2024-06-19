@@ -20,11 +20,19 @@ function App() {
           url
         )}`
       );
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      const data = await response.json();
-      setImageData(data.imageUrl);
+
+      const contentType = response.headers.get("content-type");
+
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        setImageData(data.imageUrl);
+      } else {
+        throw new Error("Received non-JSON response");
+      }
     } catch (error) {
       console.error("Error fetching image:", error);
     } finally {
