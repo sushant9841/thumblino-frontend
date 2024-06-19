@@ -14,11 +14,15 @@ function App() {
     setLoading(true);
 
     try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
       const response = await fetch(
-        `http://localhost:5000/get/width/${width}/height/${height}/quality/${quality}/${encodeURIComponent(
+        `${backendUrl}/get/width/${width}/height/${height}/quality/${quality}/${encodeURIComponent(
           url
         )}`
       );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
       const data = await response.json();
       setImageData(data.imageUrl);
     } catch (error) {
@@ -37,38 +41,42 @@ function App() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="Enter URL"
+            required
           />
           <input
             type="number"
             value={width}
             onChange={(e) => setWidth(Number(e.target.value))}
             placeholder="Viewport Width"
+            required
           />
           <input
             type="number"
             value={height}
             onChange={(e) => setHeight(Number(e.target.value))}
             placeholder="Viewport Height (0 for full)"
+            required
           />
           <input
             type="number"
             value={quality}
             onChange={(e) => setQuality(Number(e.target.value))}
             placeholder="JPEG Quality (1-100)"
+            required
           />
           <button type="submit" disabled={loading}>
             Capture
           </button>
         </form>
         {loading && <div className="loader">Loading...</div>}
-        {imageData ? (
+        {imageData && (
           <img
             src={imageData}
             alt="Screenshot"
             style={{ maxWidth: "100%", height: "auto" }} // Ensure image responsiveness
             loading="lazy" // Lazy loading for better performance
           />
-        ) : null}
+        )}
       </header>
     </div>
   );
