@@ -20,23 +20,11 @@ function App() {
           url
         )}`
       );
-
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-
-      const contentType = response.headers.get("content-type");
-
-      // Check if response is JSON
-      if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
-        setImageData(data.imageUrl);
-      } else {
-        // If response is not JSON, handle it here
-        const textData = await response.text(); // Get response as text
-        console.log("Non-JSON response:", textData); // Log the response for debugging
-        throw new Error("Received non-JSON response");
-      }
+      const data = await response.json();
+      setImageData(data.imageUrl);
     } catch (error) {
       console.error("Error fetching image:", error);
     } finally {
